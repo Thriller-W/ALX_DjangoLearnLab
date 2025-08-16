@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.detail import DetailView
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from django.http import HttpResponse
 from .models import Book, Library
 
 
@@ -23,7 +24,7 @@ class LibraryDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Add all books belonging to this library
-        context['books'] = Book.objects.filter(library=self.object)
+        context['books'] = Book.objects.filter(libraries=self.object)
         return context
 
 
@@ -66,4 +67,26 @@ def librarian_view(request):
 @user_passes_test(is_member)
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
+
+
+# ---------------- Step 2: Secured Book Actions ----------------
+
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    # Secured placeholder for adding a book
+    return HttpResponse("Add book: permission check passed.")
+
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    # Secured placeholder for editing a book
+    return HttpResponse(f"Edit book {book.pk}: permission check passed.")
+
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    # Secured placeholder for deleting a book
+    return HttpResponse(f"Delete book {book.pk}: permission check passed.")
 
