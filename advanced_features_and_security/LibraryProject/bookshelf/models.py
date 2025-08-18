@@ -46,8 +46,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     """
     Custom user model extending Django's AbstractUser.
-
-    Additional fields required:
+    Additional fields:
     - date_of_birth: DateField
     - profile_photo: ImageField
     """
@@ -60,10 +59,24 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+
 class Book(models.Model):
+    """
+    Book model with custom permissions defined in Meta.
+    """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=100)
     publication_year = models.IntegerField()
 
+    class Meta:
+        # Custom permissions
+        permissions = [
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
+        ]
+
     def __str__(self):
         return self.title
+
