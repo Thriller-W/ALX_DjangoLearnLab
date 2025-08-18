@@ -27,6 +27,38 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# SECURITY NOTE: for production, DEBUG must be False and ALLOWED_HOSTS set appropriately
+DEBUG = False
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # adjust to your real domain(s) in production
+
+# Basic browser-side protections and cookie security
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Ensure cookies are only sent over HTTPS (set to True for production with HTTPS)
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Optional recommended extras (good to have in production with HTTPS)
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = False
+
+# Insert our CSP middleware into MIDDLEWARE (ensure this is placed after SecurityMiddleware)
+# Find your existing MIDDLEWARE list and add 'LibraryProject.middleware.ContentSecurityPolicyMiddleware'
+# Example:
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'LibraryProject.middleware.ContentSecurityPolicyMiddleware',  # <- add this line
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # ... other middleware ...
+]
 
 # Application definition
 

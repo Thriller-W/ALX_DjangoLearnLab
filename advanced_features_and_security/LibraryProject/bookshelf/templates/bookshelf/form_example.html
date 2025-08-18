@@ -1,0 +1,37 @@
+<!-- bookshelf/templates/bookshelf/form_example.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Secure Form Example</title>
+</head>
+<body>
+  <h1>Secure Form Example</h1>
+
+  <!-- POST form: must include CSRF token to pass Django's CSRF protection -->
+  <form method="post" action="">
+    {% csrf_token %}
+    <!-- Render form fields (Django form will handle escaping) -->
+    {{ form.as_p }}
+
+    <!-- Show non-field errors (if any) -->
+    {% if form.non_field_errors %}
+      <div class="errors">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p>
+    <a href="{% url 'list_books' %}">Back to book list</a>
+  </p>
+
+  <hr>
+  <small>
+    Note: This template includes <code>{% raw %}{% csrf_token %}{% endraw %}</code>.
+    Removing it will cause Django to return a 403 on POST (CSRF protection).
+  </small>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!-- bookshelf/templates/bookshelf/book_list.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Books</title>
+</head>
+<body>
+  <h1>Books</h1>
+
+  <!-- Safe search form (GET is standard for searches) -->
+  <form method="get" action="">
+    {{ form.query.label_tag }} {{ form.query }}
+    <button type="submit">Search</button>
+  </form>
+
+  <p><a href="{% url 'form_example' %}">Open secure form (POST)</a></p>
+
+  <ul>
+    {% for book in books %}
+      <!-- Django auto-escapes variables; explicit escape added to emphasize safety -->
+      <li>{{ book.title|escape }} — {{ book.author|default_if_none:"Unknown"|escape }}</li>
+    {% empty %}
+      <li>No books found.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

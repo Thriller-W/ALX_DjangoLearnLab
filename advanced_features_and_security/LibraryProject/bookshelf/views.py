@@ -6,7 +6,7 @@ from .forms import BookForm
 
 # List view — requires can_view permission
 @permission_required('bookshelf.can_view', raise_exception=True)
-def book_list(request):  # 👈 renamed to match checker
+def book_list(request):
     books = Book.objects.all()
     return render(request, 'bookshelf/list_books.html', {'books': books})
 
@@ -17,7 +17,7 @@ def add_book(request):
         form = BookForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('bookshelf:book_list')  # 👈 updated redirect
+            return redirect('bookshelf:book_list')
     else:
         form = BookForm()
     return render(request, 'bookshelf/book_form.html', {'form': form})
@@ -30,7 +30,7 @@ def edit_book(request, book_id):
         form = BookForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
-            return redirect('bookshelf:book_list')  # 👈 updated redirect
+            return redirect('bookshelf:book_list')
     else:
         form = BookForm(instance=book)
     return render(request, 'bookshelf/book_form.html', {'form': form, 'book': book})
@@ -39,4 +39,8 @@ def edit_book(request, book_id):
 @permission_required('bookshelf.can_delete', raise_exception=True)
 def delete_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('bookshelf:book_list')
+    return render(request, 'bookshelf/confirm_delete.html', {'book': book})
 
