@@ -15,7 +15,7 @@ class BookList(generics.ListAPIView):
     permission_classes = [AllowAny]
 
 
-class BookViewSet(ModelViewSet):  # <-- checker looks for BookViewSet
+class BookViewSet(viewsets.ModelViewSet):
     """
     Full CRUD for Book model using DRF's ModelViewSet.
     Provides:
