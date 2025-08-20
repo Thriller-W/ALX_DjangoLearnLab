@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ModelViewSet  # <-- required for CRUD
+from rest_framework import viewsets, permissions
 from .models import Book
 from .serializers import BookSerializer
 
@@ -28,5 +28,13 @@ class BookViewSet(viewsets.ModelViewSet):
     """
     queryset = Book.objects.all().order_by("id")
     serializer_class = BookSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+class BookAdminWriteViewSet(viewsets.ModelViewSet):
+    """
+    Example: only admin users can access this endpoint.
+    Everyone else is denied.
+    """
+    queryset = Book.objects.all().order_by("id")
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAdminUser]
