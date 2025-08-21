@@ -1,5 +1,6 @@
 # api/views.py
-from rest_framework import generics, permissions
+from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from .models import Book
 from .serializers import BookSerializer
@@ -13,7 +14,7 @@ class BookListView(generics.ListAPIView):
     """
     queryset = Book.objects.all().order_by("id")
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -34,7 +35,7 @@ class BookDetailView(generics.RetrieveAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
     lookup_field = "pk"
 
 
@@ -45,13 +46,12 @@ class BookCreateView(generics.CreateAPIView):
     Auth required: creates a new book.
     """
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Book.objects.all()
 
     def perform_create(self, serializer):
-        # Example of extra validation: titles must be unique (adjust as needed).
         title = serializer.validated_data.get("title")
         if title and Book.objects.filter(title=title).exists():
             raise ValidationError({"title": "A book with this title already exists."})
@@ -66,7 +66,7 @@ class BookUpdateView(generics.UpdateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     lookup_field = "pk"
 
     def perform_update(self, serializer):
@@ -81,6 +81,6 @@ class BookDeleteView(generics.DestroyAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     lookup_field = "pk"
 
