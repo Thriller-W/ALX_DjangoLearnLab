@@ -19,8 +19,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,10 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third-party apps
     'rest_framework',
     'django_filters',
-    # Local apps
     'api',
 ]
 
@@ -122,6 +118,8 @@ REST_FRAMEWORK = {
     ],
     # Enable filtering
     'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend'
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],
 }

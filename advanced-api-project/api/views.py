@@ -1,9 +1,11 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from .models import Book
+from django_filters import rest_framework
 from .serializers import BookSerializer
-
 
 class BookListView(generics.ListAPIView):
     """
@@ -13,14 +15,24 @@ class BookListView(generics.ListAPIView):
     """
     queryset = Book.objects.all().order_by("id")
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions. AllowAny]
 
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    # Filtering by these model fields (exact match)
+    filterset_fields = ['title', 'publication_year', 'author_name']
+
+    # Search across these fields (icontains)
+    search_fields = ['title', 'author_name']
+
+    # Allow ordering by these fields (and set a sensible default)
+    ordering_fields = ['id', 'title', 'publication_year', 'author_name']
+    ordering = ['title']
+    
     def get_queryset(self):
         qs = super().get_queryset()
         author = self.request.query_params.get("author")
         title = self.request.query_params.get("title")
-        if author:
-            qs = qs.filter(author__icontains=author)
         if title:
             qs = qs.filter(title__icontains=title)
         return qs
