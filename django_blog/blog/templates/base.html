@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Django Blog Auth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- You can include a global stylesheet here if you like -->
+</head>
+<body>
+  <header style="padding: 1rem; border-bottom: 1px solid #ddd;">
+    <nav style="display:flex; gap:1rem; flex-wrap: wrap;">
+      <a href="/login/">Login</a>
+      <a href="/register/">Register</a>
+      <a href="/profile/">Profile</a>
+      <a href="/logout/">Logout</a>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <ul style="list-style:none; padding:1rem;">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main style="padding: 1rem;">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

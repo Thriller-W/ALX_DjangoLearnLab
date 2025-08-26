@@ -1,19 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Django Blog{% endblock %}</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+  <title>Django Blog Auth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- You can add a global CSS here if you like -->
+  <link rel="stylesheet" href="{% static 'css/global.css' %}">
 </head>
-<body>
-  <header>
-    <h1>Django Blog</h1>
+<body style="font-family: Arial, sans-serif; margin:0; padding:0;">
+
+  <!-- Header and navigation -->
+  <header style="background:#f5f5f5; padding:1rem; border-bottom:1px solid #ddd;">
+    <nav style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <a href="/login/">Login</a>
+      <a href="/register/">Register</a>
+      <a href="/profile/">Profile</a>
+      <a href="/logout/">Logout</a>
+    </nav>
   </header>
-  <main>
+
+  <!-- Messages -->
+  {% if messages %}
+    <ul style="list-style:none; padding:1rem; margin:0;">
+      {% for message in messages %}
+        <li style="margin-bottom:0.5rem; color:green;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- Main content block -->
+  <main style="padding:1rem;">
     {% block content %}{% endblock %}
   </main>
-  <script src="{% static 'blog/app.js' %}"></script>
+
 </body>
 </html>
+

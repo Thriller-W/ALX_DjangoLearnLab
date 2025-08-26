@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<h1>Login</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <p>
+    {{ form.username.label_tag }}<br>
+    {{ form.username }}
+    {% if form.username.errors %}<br>{{ form.username.errors }}{% endif %}
+  </p>
+  <p>
+    {{ form.password.label_tag }}<br>
+    {{ form.password }}
+    {% if form.password.errors %}<br>{{ form.password.errors }}{% endif %}
+  </p>
+
+  {% if next %}
+    <input type="hidden" name="next" value="{{ next }}">
+  {% endif %}
+
+  <button type="submit">Log in</button>
+</form>
+
+<p>Don’t have an account? <a href="/register/">Register</a></p>
+{% endblock %}

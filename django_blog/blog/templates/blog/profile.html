@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Your Profile</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <p>
+    {{ form.first_name.label_tag }}<br>
+    {{ form.first_name }}
+    {% if form.first_name.errors %}<br>{{ form.first_name.errors }}{% endif %}
+  </p>
+
+  <p>
+    {{ form.last_name.label_tag }}<br>
+    {{ form.last_name }}
+    {% if form.last_name.errors %}<br>{{ form.last_name.errors }}{% endif %}
+  </p>
+
+  <p>
+    {{ form.email.label_tag }}<br>
+    {{ form.email }}
+    {% if form.email.errors %}<br>{{ form.email.errors }}{% endif %}
+  </p>
+
+  <button type="submit">Save changes</button>
+</form>
+{% endblock %}

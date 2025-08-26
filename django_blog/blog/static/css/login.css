@@ -1,0 +1,4 @@
+/* Minimal styling for login page */
+body { font-family: system-ui, Arial, sans-serif; }
+form { max-width: 420px; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+button { padding: 0.5rem 1rem; cursor: pointer; }
