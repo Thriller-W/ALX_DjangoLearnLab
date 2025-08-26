@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Post
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -28,3 +29,12 @@ class ProfileForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError("This email is already in use.")
         return email
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "content"]  # Author will be set automatically in the view
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "Enter a title", "class": "form-control"}),
+            "content": forms.Textarea(attrs={"rows": 6, "placeholder": "Write your post here...", "class": "form-control"}),
+        }
