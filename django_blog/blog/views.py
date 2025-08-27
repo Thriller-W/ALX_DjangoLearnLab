@@ -1,6 +1,5 @@
-# blog/views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -16,29 +15,28 @@ from .forms import CommentForm
 # Post Views
 # -------------------------------
 
-# Home Page - List of Posts
 class PostListView(ListView):
+    """Home Page - List of Posts"""
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-created_at']
 
 
-# Post Details
 class PostDetailView(DetailView):
+    """Post Details Page"""
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add a blank CommentForm to the context for comment submission
         context['comment_form'] = CommentForm()
         return context
 
 
-# Create a New Post
 class PostCreateView(LoginRequiredMixin, CreateView):
+    """Create a New Post"""
     model = Post
     template_name = 'blog/post_form.html'
     fields = ['title', 'content']
@@ -48,8 +46,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# Update a Post
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Update an Existing Post"""
     model = Post
     template_name = 'blog/post_form.html'
     fields = ['title', 'content']
@@ -63,8 +61,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author
 
 
-# Delete a Post
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Delete a Post"""
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('post-list')
@@ -75,10 +73,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 # -------------------------------
-# User Registration and Profile
+# User Registration & Profile
 # -------------------------------
 
 def register_view(request):
+    """User Registration"""
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -92,32 +91,32 @@ def register_view(request):
 
 @login_required
 def profile_view(request):
+    """User Profile Page"""
     return render(request, 'registration/profile.html')
 
 
 # -------------------------------
-# Comment Views
+# Comment Views (CRUD)
 # -------------------------------
 
-@login_required
-def comment_create_view(request, post_id):
-    """Create a new comment for a post."""
-    post = get_object_or_404(Post, pk=post_id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request, 'blog/comment_form.html', {'form': form, 'post': post})
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    """Create a New Comment"""
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs.get('post_id'))
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.kwargs.get('post_id')})
 
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Update an existing comment."""
+    """Update an Existing Comment"""
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
@@ -131,7 +130,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Delete a comment."""
+    """Delete a Comment"""
     model = Comment
     template_name = 'blog/comment_confirm_delete.html'
 
