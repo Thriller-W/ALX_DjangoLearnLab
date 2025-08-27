@@ -8,7 +8,10 @@ from .views import (
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
+    comment_create_view,
 )
+
+app_name = 'blog'
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post_list'),
@@ -20,5 +23,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
     path('register/', register_view, name='register'),
     path('profile/', profile_view, name='profile'),
+    path('posts/<int:post_id>/comments/new/', comment_create_view, name='comment_create'),  # <-- Added
 ]
 
