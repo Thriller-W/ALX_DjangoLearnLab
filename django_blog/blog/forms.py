@@ -33,10 +33,39 @@ class ProfileForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content"]  # Author will be set automatically in the view
-        widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Enter a title", "class": "form-control"}),
-            "content": forms.Textarea(attrs={"rows": 6, "placeholder": "Write your post here...", "class": "form-control"}),
+        fields = ["title", "content", "tags"]
+        widgets ={
+            "title": forms.TextInput(
+                attrs={
+                    "placeholder": "Enter a title",
+                    "class": "form-control",
+                }
+            ),
+            "slug": forms.TextInput(
+                attrs={
+                    "placeholder": "Enter a unique slug (optional)",
+                    "class": "form-control",
+                }
+            ),
+            "content": forms.Textarea(
+                attrs={
+                    "rows": 6,
+                    "placeholder": "Write your post content here...",
+                    "class": "form-control",
+                }
+            ),
+
+            "tags": forms.TextInput(
+                attrs={
+                    "placeholder": "Add tags separated by commas (e.g. django, tutorials, faith)",
+                    "class": "form-control",
+                }
+            ),
+        }
+
+        help_texts = {
+            "tags": "Enter one or more tags separated by commas. "
+                    "Tags help readers find related content easily.",
         }
 class CommentForm(forms.ModelForm):
     class Meta:
