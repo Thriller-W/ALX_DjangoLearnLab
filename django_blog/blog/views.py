@@ -21,17 +21,16 @@ class SearchResultsView(ListView):
         return Post.objects.none()
 
 
-class TagPostListView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = "blog/tag_posts.html"
     context_object_name = "posts"
 
     def get_queryset(self):
-        self.tag = get_object_or_404(Tag, name=self.kwargs["tag_name"])
-        return Post.objects.filter(tags__name=self.tag).distinct()
+        self.tag = get_object_or_404(Tag, slug=self.kwargs["tag_slug"])
+        return Post.objects.filter(tags__in=[self.tag]).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tag"] = self.tag
         return context
-
