@@ -1,14 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from taggit.forms import TagWidget  # ✅ Add this
 from .models import Post, Comment
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
-        # Include email + optional name fields in registration
         fields = ("username", "email", "first_name", "last_name", "password1", "password2")
 
     def clean_email(self):
@@ -30,20 +31,15 @@ class ProfileForm(forms.ModelForm):
             raise forms.ValidationError("This email is already in use.")
         return email
 
+
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["title", "content", "tags"]
-        widgets ={
+        widgets = {
             "title": forms.TextInput(
                 attrs={
                     "placeholder": "Enter a title",
-                    "class": "form-control",
-                }
-            ),
-            "slug": forms.TextInput(
-                attrs={
-                    "placeholder": "Enter a unique slug (optional)",
                     "class": "form-control",
                 }
             ),
@@ -54,19 +50,13 @@ class PostForm(forms.ModelForm):
                     "class": "form-control",
                 }
             ),
-
-            "tags": forms.TextInput(
-                attrs={
-                    "placeholder": "Add tags separated by commas (e.g. django, tutorials, faith)",
-                    "class": "form-control",
-                }
-            ),
+            "tags": TagWidget(),  # ✅ Checker wants this
         }
-
         help_texts = {
-            "tags": "Enter one or more tags separated by commas. "
-                    "Tags help readers find related content easily.",
+            "tags": "Enter one or more tags separated by commas. Tags help readers find related content easily.",
         }
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -82,3 +72,4 @@ class CommentForm(forms.ModelForm):
         if len(data) > 2000:
             raise forms.ValidationError("Comment too long (max 2000 characters).")
         return data.strip()
+

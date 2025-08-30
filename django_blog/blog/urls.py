@@ -11,6 +11,8 @@ from .views import (
     CommentCreateView,
     CommentUpdateView,
     CommentDeleteView,
+    SearchResultsView,  # ✅ Added
+    TagPostListView,    # ✅ Added
 )
 
 app_name = 'blog'
@@ -35,6 +37,10 @@ urlpatterns = [
     # User-related URLs
     path('register/', register_view, name='register'),
     path('profile/', profile_view, name='profile'),
+
+    # Search & Tags
+    path('search/', SearchResultsView.as_view(), name='search'),
+    path('tags/<str:tag_name>/', TagPostListView.as_view(), name='tag_posts'),
 ]
 
 
